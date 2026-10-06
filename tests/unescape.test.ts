@@ -43,38 +43,8 @@ function load() {
   return { handlers, calls };
 }
 
-test('only two hooks, no tools or messages of its own', () => {
+test('installation never rewrites tool arguments or conversation history', () => {
   const { handlers, calls } = load();
-  assert.deepEqual([...new Set(calls)], ['on']);
-  assert.deepEqual([...handlers.keys()].sort(), ['message_end', 'tool_call']);
-});
-
-test('a prose tool runs with decoded arguments; a code tool runs as written', () => {
-  const { handlers } = load();
-  const answer = { type: 'tool_call', toolCallId: '1', toolName: 'answer', input: { kind: 'answer', answer: `Toqu${esc('00e9')} el ${ESCAPED}` } };
-  assert.equal(handlers.get('tool_call')!(answer), undefined);
-  assert.equal(answer.input.answer, `Toqu\u{e9} el ${DECODED}`);
-  const edit = { type: 'tool_call', toolCallId: '2', toolName: 'edit', input: { path: 'a.ts', edits: [{ oldText: 'x', newText: `'${ESCAPED}'` }] } };
-  handlers.get('tool_call')!(edit);
-  assert.equal(edit.input.edits[0]!.newText, `'${ESCAPED}'`);
-  assert.ok(PROSE_TOOLS.has('team_message'));
-  assert.ok(!PROSE_TOOLS.has('bash') && !PROSE_TOOLS.has('write') && !PROSE_TOOLS.has('agent_delegate'));
-});
-
-test('the stored reply is decoded so the model stops copying the escapes', () => {
-  const { handlers } = load();
-  const message = {
-    role: 'assistant',
-    content: [
-      { type: 'thinking', thinking: `pensando ${ESCAPED}` },
-      { type: 'toolCall', id: 'a', name: 'team_message', arguments: { to: 'qa', kind: 'handoff', body: `act${esc('00fa')}a` } },
-      { type: 'toolCall', id: 'b', name: 'write', arguments: { path: 'x.json', content: `"${ESCAPED}"` } },
-    ],
-  };
-  const result = handlers.get('message_end')!({ type: 'message_end', message });
-  assert.equal(result.message.content[1].arguments.body, 'act\u{fa}a');
-  assert.equal(result.message.content[2], message.content[2], 'code tools are left as written');
-  assert.equal(result.message.content[0], message.content[0], 'thinking is not touched');
-  assert.equal(handlers.get('message_end')!({ type: 'message_end', message: { role: 'assistant', content: [{ type: 'text', text: 'hola' }] } }), undefined);
-  assert.equal(handlers.get('message_end')!({ type: 'message_end', message: { role: 'user', content: ESCAPED } }), undefined);
+  assert.deepEqual(calls, []);
+  assert.equal(handlers.size, 0, 'literal escapes in paths, commands and evidence must reach the model unchanged');
 });
