@@ -1,15 +1,3 @@
-/**
- * pi-unescape: some models write accents in tool arguments as literal escapes,
- * "c\u00f3digo" instead of "código" (MiniMax-M3 in a team session, grok and
- * gpt-5.6 now and then). Once one lands in the transcript the model copies it,
- * so every later reply and team message shows them.
- *
- * This decodes them in prose tools only (replies, team messages, reports),
- * before the tool runs and in the stored message, so the person reads accents
- * and the model stops seeing escapes to copy. Code tools (edit, write, bash,
- * delegations) are never touched: there an escape can be the point. Only
- * non-ASCII escapes are decoded; `"` and friends stay as written.
- */
 import type { ExtensionAPI } from '@earendil-works/pi-coding-agent';
 
 /** Tools whose string arguments are prose the person or another agent reads. */
@@ -68,27 +56,8 @@ export function unescapeValue<T>(value: T): T {
   return value;
 }
 
-export default function piUnescape(pi: ExtensionAPI): void {
-  // Before the tool runs: what it delivers, renders and sends on is clean.
-  pi.on('tool_call', event => {
-    if (!PROSE_TOOLS.has(event.toolName)) return;
-    const input = event.input as Record<string, unknown>;
-    const fixed = unescapeValue(input);
-    if (fixed !== input) Object.assign(input, fixed);
-  });
-
-  // The stored reply: the model reads its own arguments back on every later turn.
-  pi.on('message_end', event => {
-    const message = event.message as { role?: string; content?: unknown };
-    if (message.role !== 'assistant' || !Array.isArray(message.content)) return;
-    let changed = false;
-    const content = message.content.map(part => {
-      if (part?.type !== 'toolCall' || !PROSE_TOOLS.has(part.name)) return part;
-      const args = unescapeValue(part.arguments);
-      if (args === part.arguments) return part;
-      changed = true;
-      return { ...part, arguments: args };
-    });
-    if (changed) return { message: { ...event.message, content } as typeof event.message };
-  });
+/** Automatic decoding is retired: literal escapes can be technical evidence. */
+export default function piUnescape(_pi: ExtensionAPI): void {
+  // Keep the package loadable for existing installations, without rewriting
+  // tool arguments or signed conversation messages. Helpers are explicit only.
 }
