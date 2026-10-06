@@ -1,6 +1,6 @@
 # pi-unescape
 
-[![pi-unescape — for PI Agent](https://raw.githubusercontent.com/prjct-app/pi-local-extensions/main/pi-unescape/docs/cover-v2.png)](https://pi.dev)
+[![pi-unescape — for PI Agent](https://raw.githubusercontent.com/prjct-app/pi-unescape/main/docs/cover-v2.png)](https://pi.dev)
 
 Some models write accents in tool arguments as literal escapes: `c\u00f3digo` instead of `código`. Once one lands in the transcript, the model copies it, and every later reply and team message shows escapes.
 

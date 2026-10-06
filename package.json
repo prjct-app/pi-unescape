@@ -1,6 +1,6 @@
 {
   "name": "@prjct.app/pi-unescape",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Decodes literal \\uXXXX accents that models write in prose tool arguments (replies, team messages, reports), so people read accents and the model stops copying escapes",
   "type": "module",
   "license": "MIT",
@@ -17,20 +17,19 @@
     "extensions": [
       "./index.ts"
     ],
-    "image": "https://raw.githubusercontent.com/prjct-app/pi-local-extensions/main/pi-unescape/docs/cover-v2.png"
+    "image": "https://raw.githubusercontent.com/prjct-app/pi-unescape/main/docs/cover-v2.png"
   },
   "engines": {
     "node": ">=22.19.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/prjct-app/pi-local-extensions.git",
-    "directory": "pi-unescape"
+    "url": "git+https://github.com/prjct-app/pi-unescape.git"
   },
   "bugs": {
-    "url": "https://github.com/prjct-app/pi-local-extensions/issues"
+    "url": "https://github.com/prjct-app/pi-unescape/issues"
   },
-  "homepage": "https://github.com/prjct-app/pi-local-extensions/tree/main/pi-unescape#readme",
+  "homepage": "https://github.com/prjct-app/pi-unescape#readme",
   "files": [
     "README.md",
     "index.ts",
@@ -40,8 +39,10 @@
   ],
   "scripts": {
     "check": "tsc --noEmit",
-    "test": "node --import tsx --test tests/*.test.ts",
-    "check:package": "npm pack --dry-run --ignore-scripts"
+    "test": "node --import tsx --test --test-concurrency=1 tests/*.test.ts",
+    "check:package": "npm pack --dry-run --ignore-scripts",
+    "build:pi": "node scripts/build-pi.mjs",
+    "audit:runtime": "node scripts/audit-production.mjs"
   },
   "dependencies": {},
   "publishConfig": {
@@ -49,5 +50,15 @@
   },
   "peerDependencies": {
     "@earendil-works/pi-coding-agent": "*"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "1.0.3",
+    "@earendil-works/pi-ai": "1.0.3",
+    "@earendil-works/pi-tui": "1.0.3",
+    "@types/node": "^22.19.0",
+    "typescript": "^5.9.3",
+    "tsx": "^4.20.0",
+    "esbuild": "^0.28.1",
+    "typebox": "1.3.7"
   }
 }
