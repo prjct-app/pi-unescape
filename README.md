@@ -22,7 +22,7 @@ pi install npm:@prjct.app/pi-unescape
 
 ## Scope
 
-- **Only prose tools:** `answer`, `team_message`, `agent_reply`, subagent and QA reports, `ask_jev`, `self_compact`, `memory_record`, `proto_reply`. The list is `PROSE_TOOLS` in `index.ts`; add a tool there when it carries prose.
+- **Only prose tools:** `answer`, `team_message`, `agent_reply`, subagent and QA reports, `self_compact`, `memory_record`, `proto_reply`. The list is `PROSE_TOOLS` in `index.ts`; add a tool there when it carries prose.
 - **Never code tools:** `edit`, `write`, `bash`, or delegations. In code an escape can be the point.
 - **Only non-ASCII escapes.** `\u0022`, an escaped backslash (`\\u00f3`) and lone surrogates stay as written.
 

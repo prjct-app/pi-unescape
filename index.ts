@@ -18,7 +18,6 @@ export const PROSE_TOOLS: ReadonlySet<string> = new Set([
   'team_message', 'team_send',
   'agent_reply',
   'subagent_report', 'subagent_ask', 'subagent_send',
-  'ask_jev',
   'self_compact',
   'memory_record',
   'proto_reply',
