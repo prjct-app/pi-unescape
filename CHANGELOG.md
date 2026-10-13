@@ -1,3 +1,8 @@
+## 0.1.5 — 2026-10-12
+
+- Code: no `let` bindings; mutable state lives in one named object. Behaviour is unchanged.
+- Tests run with temporary Pi and prjct folders, so they never touch your real configuration.
+
 ## 0.1.3 (2026-10-06)
 
 ## 0.1.4 (2026-10-06)
